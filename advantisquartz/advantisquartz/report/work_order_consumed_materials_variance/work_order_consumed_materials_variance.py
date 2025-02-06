@@ -51,9 +51,12 @@ def execute(filters=None):
                     # print("\n\n", rate_data, "\n\n")
             wo_group_data.append({
                         "name": wo_data_name.name,
+                        "planned_start_date":wo_data_name.planned_start_date,
                         "status": wo_data_name.status,
                         "production_item":  wo_data_name.production_item,
+                        "production_item_name":wo_data_name.production_item_name,
                         "qty": wo_data_name.qty,
+                        "batch_no":wo_data_name.custom_batch_no,
                         "produced_qty": wo_data_name.produced_qty,
                         "required_qty":wo_data_name.required_qty,
                         "consumed_qty":wo_data_name.consumed_qty,
@@ -167,12 +170,28 @@ def get_columns():
 			"width": 180,
 			
 		},
+        {
+			"label": _("Planned Start Date"),
+			"fieldname": "planned_start_date",
+			"fieldtype": "Date",
+			
+			"width": 180,
+			
+		},
 		{"label": _("Status"), "fieldname": "status", "fieldtype": "Data", "width": 100},
 		{
 			"label": _("Production Item"),
 			"fieldname": "production_item",
 			"fieldtype": "Link",
 			"options": "Item",
+			"width": 130,
+		},
+        {"label": _("Production Item Name"), "fieldname": "production_item_name", "fieldtype": "Data", "width": 180},
+        {
+			"label": _("Batch No"),
+			"fieldname": "batch_no",
+			"fieldtype": "Link",
+			"options": "Batch",
 			"width": 130,
 		},
 		{"label": _("Qty to Produce"), "fieldname": "qty", "fieldtype": "Float", "width": 120},
@@ -229,8 +248,11 @@ def get_work_order_data(filters):
         .on(wo.name == stock.work_order)
         .select(
             wo.name,
+            wo.planned_start_date,
             wo.status,
+            wo.custom_batch_no,
             wo.production_item,
+            wo.item_name.as_("production_item_name"),
             wo.qty,
             wo.produced_qty,
             woi.item_code,
